@@ -23,8 +23,3 @@ echo "=========================================="
 echo "Docker installation completed successfully!"
 echo "Log out and log back in (or run 'newgrp docker')"
 echo "to use Docker without sudo."
-<<<<<<< HEAD
-echo "=========================================="
-=======
-echo "=========================================="
->>>>>>> 8a5de5b (initial commit)
