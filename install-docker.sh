@@ -3,10 +3,10 @@
 set -e
 
 echo "Updating package index..."
-sudo apt update
+sudo dnf update
 
 echo "Installing prerequisites..."
-sudo apt install -y \
+sudo dnf install -y \
     ca-certificates \
     curl \
     gnupg
@@ -25,10 +25,10 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 echo "Updating package index..."
-sudo apt update
+sudo dnf update
 
 echo "Installing Docker..."
-sudo apt install -y \
+sudo dnf install -y \
     docker-ce \
     docker-ce-cli \
     containerd.io \
