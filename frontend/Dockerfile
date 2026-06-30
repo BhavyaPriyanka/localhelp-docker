@@ -6,7 +6,7 @@ RUN apk add --no-cache nginx
 WORKDIR /app
 
 # Install dependencies
-COPY package*.json ./
+COPY code/package*.json ./
 RUN npm install
 
 # Copy source
