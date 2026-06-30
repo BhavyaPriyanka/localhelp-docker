@@ -11,6 +11,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+RUN ls -l /usr/share/nginx
+
 COPY . .
 
 # Build React app
