@@ -8,3 +8,5 @@ backend.service.j2
 backend.sh
 db/
 mvnw.cmd
+target
+.git
