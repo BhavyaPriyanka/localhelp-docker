@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy source
-COPY . .
+COPY code/* .
 
 # Build React app
 RUN npm run build
@@ -19,6 +19,8 @@ RUN npm run build
 RUN mkdir -p /usr/share/nginx/html && \
     rm -rf /usr/share/nginx/html/* && \
     cp -a build/. /usr/share/nginx/html/
+
+COPY localhelp.conf /etc/nginx/http.d/default.conf
 
 # Expose nginx port
 EXPOSE 80
