@@ -1,5 +1,5 @@
 FROM maven:3.9.9-eclipse-temurin-21
-RUN useradd localhelp
+RUN useradd -m localhelp
 ENV DB_HOST = mysql
 WORKDIR /app
 RUN chown -R localhelp:localhelp /app
