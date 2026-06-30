@@ -21,6 +21,8 @@ RUN npm run build
 # Copy build output to nginx's web root
 RUN rm -rf /usr/share/nginx/html/*
 
+RUN mkdir -p /usr/share/nginx/html
+
 RUN  cp -r build/* /usr/share/nginx/html/
 
 # Expose HTTP port
