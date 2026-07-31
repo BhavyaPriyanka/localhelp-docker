@@ -72,10 +72,9 @@ CorsConfigurationSource corsConfigurationSource() {
 
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(
+    configuration.setAllowedOriginPatterns(
             List.of(
-                    "http://localhost:85",
-                    "http://localhost"
+                     "http://localhost:*"
             )
     );
 
