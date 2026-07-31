@@ -17,7 +17,6 @@ WORKDIR /app
 
 COPY --from=builder /build/target/*.jar app.jar
 
-USER spring
 
 EXPOSE 8080
 

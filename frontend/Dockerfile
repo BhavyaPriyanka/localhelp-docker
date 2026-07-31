@@ -1,29 +1,41 @@
-FROM node:20-alpine
+# ==========================
+# Stage 1 - Build React App
+# ==========================
+FROM node:20-alpine AS builder
 
-# Install nginx
-RUN apk add --no-cache nginx
+
 
 WORKDIR /app
 
-# Install dependencies
+# Copy dependency files first (Docker layer caching)
 COPY code/package*.json ./
-RUN npm install
 
-# Copy source
+# Install dependencies
+RUN npm ci
+
+
+# Copy source code
 COPY code/ .
 
-# Build React app
+
+# Build React application
 RUN npm run build
 
-# Create nginx web root and copy build files
-RUN mkdir -p /usr/share/nginx/html && \
-    rm -rf /usr/share/nginx/html/* && \
-    cp -a build/. /usr/share/nginx/html/
+# ==========================
+# Stage 2 - Nginx Runtime
+# ==========================
+FROM nginx:1.28-alpine
 
-COPY localhelp.conf /etc/nginx/http.d/default.conf
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
 
-# Expose nginx port
+# Copy build output only
+COPY --from=builder /app/build/ /usr/share/nginx/html/
+
+# Copy nginx configuration
+COPY localhelp.conf /etc/nginx/conf.d/default.conf
+
+
 EXPOSE 80
 
-# Run nginx
 CMD ["nginx", "-g", "daemon off;"]

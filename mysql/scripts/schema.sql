@@ -1,64 +1,103 @@
-CREATE DATABASE IF NOT EXISTS appdb;
-
--- =========================
--- CREATE APPLICATION USER
--- =========================
-CREATE USER IF NOT EXISTS 'appuser'@'%' IDENTIFIED BY 'localhelp';
-
-GRANT ALL PRIVILEGES ON appdb.* TO 'appuser'@'%';
-
-FLUSH PRIVILEGES;
-
+DROP DATABASE IF EXISTS appdb;
+CREATE DATABASE appdb;
 USE appdb;
 
 -- =========================
--- MEDICINES TABLE
+-- USERS
 -- =========================
-CREATE TABLE IF NOT EXISTS medicines (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  description TEXT,
-  price DOUBLE,
-  stock INT,
-  UNIQUE KEY uniq_medicine_name (name)
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN','USER') NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL
 );
 
 -- =========================
--- ORDERS TABLE
+-- MEDICINES
 -- =========================
-CREATE TABLE IF NOT EXISTS orders (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  total_amount DOUBLE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  order_date DATETIME
+CREATE TABLE medicines (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    price DOUBLE,
+    stock INT,
+    UNIQUE KEY uniq_medicine_name (name)
 );
 
 -- =========================
--- ORDER ITEMS TABLE
+-- ORDERS
 -- =========================
-CREATE TABLE IF NOT EXISTS order_item (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  medicine_id INT,
-  price DOUBLE,
-  quantity INT,
-  order_id INT,
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    total_amount DOUBLE,
+    user_id BIGINT,
+    status VARCHAR(255) NOT NULL DEFAULT 'PLACED',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    order_date DATETIME,
 
-  INDEX idx_order_item_order_id (order_id),
-  INDEX idx_order_item_medicine_id (medicine_id),
-
-  CONSTRAINT fk_order_item_order
-    FOREIGN KEY (order_id) REFERENCES orders(id)
-    ON DELETE CASCADE,
-
-  CONSTRAINT fk_order_item_medicine
-    FOREIGN KEY (medicine_id) REFERENCES medicines(id)
-    ON DELETE RESTRICT
+    CONSTRAINT fk_orders_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL
 );
 
 -- =========================
--- SEED DATA (DUPLICATE SAFE)
+-- ORDER ITEMS
 -- =========================
-INSERT IGNORE INTO medicines (name, description, price, stock) VALUES
+CREATE TABLE order_item (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    medicine_id BIGINT NOT NULL,
+    quantity INT,
+    price DOUBLE,
+
+    CONSTRAINT fk_order_item_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_order_item_medicine
+        FOREIGN KEY (medicine_id)
+        REFERENCES medicines(id)
+);
+
+-- =========================
+-- DEFAULT USERS
+-- =========================
+INSERT INTO users (
+    username,
+    password,
+    role,
+    enabled
+)
+VALUES
+(
+    'admin',
+    '$2a$10$9W8LwSfdRun4tT3ThxmgA.7W82EkJhMrhnls6Tvm6KD6uyB7Gj.8e',
+    'ADMIN',
+    TRUE
+),
+(
+    'user',
+    '$2a$10$X/jrrQdu4Kz9rPK24rPQEeCUi7D1ZY//dvgDuc9qZFvSxLJl65KK.',
+    'USER',
+    TRUE
+);
+
+-- =========================
+-- SAMPLE MEDICINES
+-- =========================
+INSERT INTO medicines (
+    name,
+    description,
+    price,
+    stock
+)
+VALUES
 ('Paracetamol', 'Fever and pain relief', 20, 100),
 ('Ibuprofen', 'Anti-inflammatory', 30, 100),
 ('Amoxicillin', 'Antibiotic', 50, 100),
