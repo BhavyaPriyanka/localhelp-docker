@@ -67,22 +67,26 @@ SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+   @Bean
 CorsConfigurationSource corsConfigurationSource() {
 
     CorsConfiguration configuration = new CorsConfiguration();
 
-   configuration.setAllowedOrigins(
-        List.of(
-            "http://localhost",
-            "http://localhost:80",
-            "http://localhost:82",
-            "http://localhost:3000"
-        )
-);
+    configuration.setAllowedOrigins(
+            List.of(
+                    "http://localhost:85",
+                    "http://localhost"
+            )
+    );
 
     configuration.setAllowedMethods(
-            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            List.of(
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "OPTIONS"
+            )
     );
 
     configuration.setAllowedHeaders(
@@ -101,5 +105,4 @@ CorsConfigurationSource corsConfigurationSource() {
     );
 
     return source;
-}
-}
+}}

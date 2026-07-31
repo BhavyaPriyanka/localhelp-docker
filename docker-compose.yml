@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+
+   mysql:
+    image: sbp828/mysql:v1.0
+    container_name: mysql
+
+    environment:
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: localhelp
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    networks:
+      - localhelp
+
+    restart: always
+
+   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: sbp828/backend:v1.3
+    container_name: backend
+
+    depends_on:
+      - mysql
+
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: appdb
+      DB_USERNAME: appuser
+      DB_PASSWORD: localhelp
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - localhelp
+
+    restart: always
+
+   frontend:
+    image: sbp828/frontend:v1.0
+    container_name: frontend
+
+    depends_on:
+      - backend
+
+    ports:
+      - "85:80"
+
+    networks:
+      - localhelp
+
+    restart: always
+
+networks:
+
+  localhelp:
+    driver: bridge
+
+
+
+volumes:
+
+  mysql-data:

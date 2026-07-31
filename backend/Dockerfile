@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # ---------- Runtime Stage ----------
-FROM gcr.io/distroless/java21-debian12:nonroot
+FROM eclipse-temurin:21-jre
 
 
 WORKDIR /app
