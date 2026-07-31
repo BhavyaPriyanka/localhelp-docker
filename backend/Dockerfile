@@ -1,20 +1,24 @@
-FROM maven:3.9.9-eclipse-temurin-21
+# ---------- Build Stage ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
-RUN useradd -m localhelp
+WORKDIR /build
+
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# ---------- Runtime Stage ----------
+FROM gcr.io/distroless/java21-debian12:nonroot
+
 
 WORKDIR /app
 
-RUN chown localhelp:localhelp /app
+COPY --from=builder /build/target/*.jar app.jar
 
-COPY --chown=localhelp:localhelp pom.xml .
-COPY --chown=localhelp:localhelp src ./src
-
-USER localhelp
-
-ENV DB_HOST=mysql
-
-RUN mvn clean package -DskipTests
+USER spring
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -jar target/*.jar"]
+ENTRYPOINT [ "java","-jar","app.jar" ]

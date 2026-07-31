@@ -8,5 +8,7 @@ backend.service.j2
 backend.sh
 db/
 mvnw.cmd
-target
 .git
+*.log
+logs/
+README.md
