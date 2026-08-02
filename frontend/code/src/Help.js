@@ -15,7 +15,7 @@ function Help() {
 
   const token = localStorage.getItem("token");
 
-  fetch("http://backend:8080/medicines", {
+  fetch("/api/medicines", {
     headers: {
       Authorization: `Bearer ${token}`
     }
