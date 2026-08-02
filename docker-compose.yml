@@ -37,6 +37,7 @@ services:
       DB_NAME: appdb
       DB_USERNAME: appuser
       DB_PASSWORD: localhelp
+      CORS_ALLOWED_ORIGINS: "http://35.171.184.139:85"
 
     ports:
       - "8080:8080"
