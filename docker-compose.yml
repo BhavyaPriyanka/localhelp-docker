@@ -49,6 +49,8 @@ services:
     restart: always
 
    frontend:
+    build:
+      context: ./frontend
     image: sbp828/frontend:v1.0
     container_name: frontend
 
