@@ -25,7 +25,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: sbp828/backend:v1.4
+    image: sbp828/backend:v1.5
     container_name: backend
 
     depends_on:
