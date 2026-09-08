@@ -60,10 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
 
- if (request.getMethod().equals("OPTIONS")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
+
         System.out.println("JWT FILTER HIT");
 
 

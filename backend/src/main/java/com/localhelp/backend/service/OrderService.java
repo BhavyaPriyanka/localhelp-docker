@@ -177,9 +177,9 @@ order.setStatus("PLACED");
             );
 
 
-           orderItem.setMedicine(
-        medicine
-);
+            orderItem.setMedicineId(
+                    medicine.getId()
+            );
 
 
             orderItem.setQuantity(
@@ -227,12 +227,18 @@ order.setStatus("PLACED");
 
     public List<OrderHistoryResponse> getMyOrders() {
 
+
     Authentication authentication =
             SecurityContextHolder
                     .getContext()
                     .getAuthentication();
 
-    String username = authentication.getName();
+
+
+    String username =
+            authentication.getName();
+
+
 
     User user =
             userRepo.findByUsername(username)
@@ -242,27 +248,44 @@ order.setStatus("PLACED");
                             )
                     );
 
+
+
     return ordersRepo.findByUser(user)
             .stream()
             .map(order -> {
 
+
                 List<OrderItemResponse> items =
                         itemRepo.findByOrder(order)
-                                .stream()
-                                .map(item -> {
+                        .stream()
+                        .map(item -> {
 
-                                    Medicine medicine =
-                                            item.getMedicine();
 
-                                    return new OrderItemResponse(
-                                            medicine.getId(),
-                                            medicine.getName(),
-                                            item.getQuantity(),
-                                            item.getPrice()
+                            Medicine medicine =
+                                    medicineRepo.findById(
+                                            item.getMedicineId()
+                                    )
+                                    .orElseThrow(() ->
+                                            new RuntimeException(
+                                                    "Medicine not found"
+                                            )
                                     );
 
-                                })
-                                .toList();
+
+
+                            return new OrderItemResponse(
+                                    medicine.getId(),
+                                    medicine.getName(),
+                                    item.getQuantity(),
+                                    item.getPrice()
+                            );
+
+
+                        })
+                        .toList();
+
+
+
 
                 return new OrderHistoryResponse(
                         order.getId(),
@@ -271,8 +294,9 @@ order.setStatus("PLACED");
                         items
                 );
 
+
             })
             .toList();
-}
-}
 
+}
+}

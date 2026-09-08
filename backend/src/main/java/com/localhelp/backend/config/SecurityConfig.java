@@ -5,8 +5,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
-import org.springframework.security.config.Customizer;
-import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +18,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.http.HttpStatus;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 
 @EnableMethodSecurity
 @Configuration
@@ -37,7 +34,6 @@ SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http
     .cors(cors -> {})
-    .cors(Customizer.withDefaults())
     .csrf(csrf -> csrf.disable())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint((request, response, authException) -> {
@@ -71,24 +67,17 @@ SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return new BCryptPasswordEncoder();
     }
 
-   @Bean
-CorsConfigurationSource corsConfigurationSource(@Value("${CORS_ALLOWED_ORIGINS:http://localhost:*}") String allowedOrigins) 
-{
+    @Bean
+CorsConfigurationSource corsConfigurationSource() {
 
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOriginPatterns(
-              Arrays.asList(allowedOrigins.split(","))
+    configuration.setAllowedOrigins(
+            List.of("http://localhost:3000")
     );
 
     configuration.setAllowedMethods(
-            List.of(
-                    "GET",
-                    "POST",
-                    "PUT",
-                    "DELETE",
-                    "OPTIONS"
-            )
+            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
     );
 
     configuration.setAllowedHeaders(
@@ -107,4 +96,5 @@ CorsConfigurationSource corsConfigurationSource(@Value("${CORS_ALLOWED_ORIGINS:h
     );
 
     return source;
-}}
+}
+}
