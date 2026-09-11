@@ -5,7 +5,7 @@ Docker configuration for the **LocalHelp** application.
 This repository contains the Dockerfiles and Docker Compose configuration used to build and run the LocalHelp application in a containerized environment.
 
 
-This Dockerfile does the following in order:
+Dockerfile does the following in order:
 
 1. **Creates a build environment** using Maven and Java 21 for the LocalHelp backend.
 
