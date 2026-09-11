@@ -86,7 +86,8 @@ CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.setAllowedOrigins(
-            List.of("https://localhelp-dev.localhelp.store")
+            List.of("https://localhelp-dev.localhelp.store",
+            "http://localhost:85")
     );
 
     configuration.setAllowedMethods(
@@ -98,6 +99,12 @@ CorsConfigurationSource corsConfigurationSource() {
     );
 
     configuration.setAllowCredentials(true);
+
+     // Expose useful response headers
+        configuration.setExposedHeaders(List.of(
+            "Authorization",
+            "Content-Type"
+        ));
 
 
     UrlBasedCorsConfigurationSource source =
