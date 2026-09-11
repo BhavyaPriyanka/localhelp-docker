@@ -1,80 +1,73 @@
 # 🐳 LocalHelp Docker
 
-Docker configuration for the **LocalHelp** application.
+Docker configuration for the **LocalHelp application**.
 
-This repository contains the Dockerfiles and Docker Compose configuration used to build and run the LocalHelp application in a containerized environment.
+This repository contains the Dockerfiles and Docker Compose configuration required to build and run the LocalHelp application in a containerized environment.
 
+---
 
-Dockerfile does the following in order:
+## 🐳 Dockerfile Build Flow
 
-1. **Creates a build environment** using Maven and Java 21 for the LocalHelp backend.
+The backend Dockerfile performs the following steps in order:
 
-2. **Sets `/build` as the working directory** inside the build container.
+1. **Creates the build environment**
+   - Uses Maven with Java 21 to build the LocalHelp backend.
 
-3. **Copies `pom.xml`** into the build container.
+2. **Sets the working directory**
+   - Uses `/build` as the working directory inside the build container.
 
-4. **Downloads all Maven dependencies** using `mvn dependency:go-offline`.
+3. **Copies the Maven configuration**
+   - Copies `pom.xml` into the build container.
 
-5. **Copies the LocalHelp backend source code** into the build container.
+4. **Downloads Maven dependencies**
+   - Runs `mvn dependency:go-offline` to download dependencies in advance.
+   - This also allows Docker to cache the dependency layer and speed up subsequent builds.
 
-6. **Builds the application** using Maven and generates the Spring Boot JAR file.
+5. **Copies the application source code**
+   - Copies the `src` directory into the build container.
 
-7. **Creates a separate lightweight runtime environment** using Distroless Java 21.
+6. **Builds the application**
+   - Runs Maven to compile and package the application.
+   - Generates the Spring Boot JAR file.
 
-8. **Runs the application as a non-root user** for better security.
+7. **Creates the runtime environment**
+   - Uses a lightweight Distroless Java 21 image for running the application.
 
-9. **Copies only the generated JAR** from the build stage into the runtime image.
+8. **Runs as a non-root user**
+   - Uses the Distroless `nonroot` image to improve container security.
 
-10. **Exposes port 8080** for the LocalHelp backend application.
+9. **Copies only the application JAR**
+   - Copies the generated JAR from the build stage into the runtime image.
+   - Maven, source code, and build dependencies are not included in the final image.
 
-11. **Starts the LocalHelp backend** using `java -jar app.jar`.
+10. **Exposes the application port**
+    - Exposes port `8080`, where the Spring Boot backend listens.
 
-12. **Final result:** a lightweight production-ready Docker image containing only the LocalHelp backend application and the Java runtime needed to run it.
+11. **Starts the application**
+    - Runs the application using `java -jar app.jar`.
 
+12. **Final result**
+    - Produces a lightweight and secure runtime image containing only the Java runtime and LocalHelp backend application.
 
-## Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 - Docker
 - Docker Compose
+- Maven
+- Java 21
+- Spring Boot
+- Distroless Java
 
-## Repository Structure
+---
 
-```
+## 📁 Repository Structure
+
+```text
 .
 ├── backend/
 ├── frontend/
 ├── mysql/
 ├── docker-compose.yml
 └── README.md
-```
-
-## Getting Started
-
-Build the images:
-
-```bash
-docker compose build
-```
-
-Start the application:
-
-```bash
-docker compose up -d
-```
-
-Stop the application:
-
-```bash
-docker compose down
-```
-
-## Related Repositories
-
-- `localhelp-backend`
-- `localhelp-frontend`
-- `localhelp-infra-terraform`
-- `localhelp-ansible-roles`
-
----
-
-**Part of the LocalHelp DevOps project.**
